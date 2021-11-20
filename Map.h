@@ -4,11 +4,11 @@
 #include <vector>
 #include <string>
 #include "Balance.h"
+#include "Functions.h"
 template<typename T>
-void sqr(tree_elem<T>* curr){//(для Map)
-    curr->DATA = curr->DATA * curr->DATA;
+T sqr(tree_elem <T> *curr) {//(äëÿ Map)
+    return curr->DATA * curr->DATA;
 }
-
 template<typename T>
 T sum(tree_elem<T>* curr,T curr_sum){//(для Reduce)
     return curr_sum + curr->DATA;
@@ -19,11 +19,11 @@ private:
     tree_elem<T> *m_root;
     int size;
 
-    void Map_help(void(*func)(tree_elem<T>*),tree_elem<T>* curr){//для рекурсивного выполнения Map
+    void Map_help(T(*func)(tree_elem<T>*),tree_elem<T>* curr,binary_tree<T>& res){//для рекурсивного выполнения Map
         if(curr){
-            Map_help(func ,curr->M_LEFT);
-            func(curr);
-            Map_help(func,curr->M_RIGHT);
+            Map_help(func ,curr->M_LEFT,res);
+            res.insert(curr->indices,func(curr));
+            Map_help(func,curr->M_RIGHT,res);
         }
     }
 
@@ -294,9 +294,15 @@ public:
     }
 
     //map, reduce
-    void Map(void(*func)(tree_elem<T>*)){//необходимо задать curr,поэтому создана вспомогательная функция
+    binary_tree<T> Map(T(*func)(tree_elem<T>*)){//необходимо задать curr,поэтому создана вспомогательная функция
         tree_elem<T>* curr = m_root;
-        Map_help(func,curr);
+
+        binary_tree<T> res(rows_count,columns_count);
+        res.insert(curr->indices,func(curr));
+
+        Map_help(func,curr,res);
+
+        return res;
     }
 
     T Reduce(T(*func)(tree_elem<T>*,T)){

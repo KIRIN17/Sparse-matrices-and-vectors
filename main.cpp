@@ -1,13 +1,12 @@
 #include <iostream>
-#include <fstream>
 #include <math.h>
 
-#include "Map.h"
 #include "TimeCheck.h"
+#include "Tests.h"
 
 int main() {
 
-
+    TestAll();
 
     int M,N;
     std::cout << "Enter sizes of the first matrix :\n";
@@ -109,9 +108,9 @@ int main() {
     std::cout << std::endl;
 
     //демонстрация map - reduce
-    map1.Map(sqr);
+
     std::cout << "First matrix after squaring each element :\n";
-    map1.print_matrix();
+    map1.Map(sqr).print_matrix();
 
     std::cout << "The sum of the elements of the modified first matrix = " << map1.Reduce(sum) << std::endl;
 
